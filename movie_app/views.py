@@ -5,7 +5,8 @@ from rest_framework import status
 from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND
 
 from .models import Movie, Director, Review
-from .serializers import DirectorSerializer, ReviewSerializer,MovieSerializer
+from .serializers import DirectorSerializer, ReviewSerializer, MovieSerializer, MovieReviewsSerializer, \
+    DirectorCountSerializer
 
 
 @api_view(['GET'])
@@ -57,6 +58,17 @@ def review_detail_api_view(request, id):
         return Response(data={'error': 'Review not found!'},
                         status=status.HTTP_404_NOT_FOUND)
     serializer = ReviewSerializer(instance=review)
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def movie_reviews_list_api_view(request):
+    movies = Movie.objects.all()
+    serializer = MovieReviewsSerializer(instance=movies, many=True)
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+def director_list_count_api_view(request):
+    directors = Director.objects.all()
+    serializer = DirectorCountSerializer(instance=directors, many=True)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
